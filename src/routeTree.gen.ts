@@ -12,6 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AssessmentRouteImport } from './routes/assessment'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AssessmentSetupRouteImport } from './routes/assessment.setup'
+import { Route as AssessmentRetellingRouteImport } from './routes/assessment.retelling'
+import { Route as AssessmentResultRouteImport } from './routes/assessment.result'
+import { Route as AssessmentReadingRouteImport } from './routes/assessment.reading'
+import { Route as AssessmentQuestionRouteImport } from './routes/assessment.question'
 import { Route as AppStudentsRouteImport } from './routes/_app.students'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppStudentsIdRouteImport } from './routes/_app.students.$id'
@@ -29,6 +34,31 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AssessmentSetupRoute = AssessmentSetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
+  getParentRoute: () => AssessmentRoute,
+} as any)
+const AssessmentRetellingRoute = AssessmentRetellingRouteImport.update({
+  id: '/retelling',
+  path: '/retelling',
+  getParentRoute: () => AssessmentRoute,
+} as any)
+const AssessmentResultRoute = AssessmentResultRouteImport.update({
+  id: '/result',
+  path: '/result',
+  getParentRoute: () => AssessmentRoute,
+} as any)
+const AssessmentReadingRoute = AssessmentReadingRouteImport.update({
+  id: '/reading',
+  path: '/reading',
+  getParentRoute: () => AssessmentRoute,
+} as any)
+const AssessmentQuestionRoute = AssessmentQuestionRouteImport.update({
+  id: '/question',
+  path: '/question',
+  getParentRoute: () => AssessmentRoute,
 } as any)
 const AppStudentsRoute = AppStudentsRouteImport.update({
   id: '/students',
@@ -48,32 +78,67 @@ const AppStudentsIdRoute = AppStudentsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/assessment': typeof AssessmentRoute
+  '/assessment': typeof AssessmentRouteWithChildren
   '/dashboard': typeof AppDashboardRoute
   '/students': typeof AppStudentsRouteWithChildren
+  '/assessment/question': typeof AssessmentQuestionRoute
+  '/assessment/reading': typeof AssessmentReadingRoute
+  '/assessment/result': typeof AssessmentResultRoute
+  '/assessment/retelling': typeof AssessmentRetellingRoute
+  '/assessment/setup': typeof AssessmentSetupRoute
   '/students/$id': typeof AppStudentsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/assessment': typeof AssessmentRoute
+  '/assessment': typeof AssessmentRouteWithChildren
   '/dashboard': typeof AppDashboardRoute
   '/students': typeof AppStudentsRouteWithChildren
+  '/assessment/question': typeof AssessmentQuestionRoute
+  '/assessment/reading': typeof AssessmentReadingRoute
+  '/assessment/result': typeof AssessmentResultRoute
+  '/assessment/retelling': typeof AssessmentRetellingRoute
+  '/assessment/setup': typeof AssessmentSetupRoute
   '/students/$id': typeof AppStudentsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
-  '/assessment': typeof AssessmentRoute
+  '/assessment': typeof AssessmentRouteWithChildren
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/students': typeof AppStudentsRouteWithChildren
+  '/assessment/question': typeof AssessmentQuestionRoute
+  '/assessment/reading': typeof AssessmentReadingRoute
+  '/assessment/result': typeof AssessmentResultRoute
+  '/assessment/retelling': typeof AssessmentRetellingRoute
+  '/assessment/setup': typeof AssessmentSetupRoute
   '/_app/students/$id': typeof AppStudentsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/assessment' | '/dashboard' | '/students' | '/students/$id'
+  fullPaths:
+    | '/'
+    | '/assessment'
+    | '/dashboard'
+    | '/students'
+    | '/assessment/question'
+    | '/assessment/reading'
+    | '/assessment/result'
+    | '/assessment/retelling'
+    | '/assessment/setup'
+    | '/students/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/assessment' | '/dashboard' | '/students' | '/students/$id'
+  to:
+    | '/'
+    | '/assessment'
+    | '/dashboard'
+    | '/students'
+    | '/assessment/question'
+    | '/assessment/reading'
+    | '/assessment/result'
+    | '/assessment/retelling'
+    | '/assessment/setup'
+    | '/students/$id'
   id:
     | '__root__'
     | '/'
@@ -81,13 +146,18 @@ export interface FileRouteTypes {
     | '/assessment'
     | '/_app/dashboard'
     | '/_app/students'
+    | '/assessment/question'
+    | '/assessment/reading'
+    | '/assessment/result'
+    | '/assessment/retelling'
+    | '/assessment/setup'
     | '/_app/students/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
-  AssessmentRoute: typeof AssessmentRoute
+  AssessmentRoute: typeof AssessmentRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -112,6 +182,41 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/assessment/setup': {
+      id: '/assessment/setup'
+      path: '/setup'
+      fullPath: '/assessment/setup'
+      preLoaderRoute: typeof AssessmentSetupRouteImport
+      parentRoute: typeof AssessmentRoute
+    }
+    '/assessment/retelling': {
+      id: '/assessment/retelling'
+      path: '/retelling'
+      fullPath: '/assessment/retelling'
+      preLoaderRoute: typeof AssessmentRetellingRouteImport
+      parentRoute: typeof AssessmentRoute
+    }
+    '/assessment/result': {
+      id: '/assessment/result'
+      path: '/result'
+      fullPath: '/assessment/result'
+      preLoaderRoute: typeof AssessmentResultRouteImport
+      parentRoute: typeof AssessmentRoute
+    }
+    '/assessment/reading': {
+      id: '/assessment/reading'
+      path: '/reading'
+      fullPath: '/assessment/reading'
+      preLoaderRoute: typeof AssessmentReadingRouteImport
+      parentRoute: typeof AssessmentRoute
+    }
+    '/assessment/question': {
+      id: '/assessment/question'
+      path: '/question'
+      fullPath: '/assessment/question'
+      preLoaderRoute: typeof AssessmentQuestionRouteImport
+      parentRoute: typeof AssessmentRoute
     }
     '/_app/students': {
       id: '/_app/students'
@@ -161,10 +266,30 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface AssessmentRouteChildren {
+  AssessmentQuestionRoute: typeof AssessmentQuestionRoute
+  AssessmentReadingRoute: typeof AssessmentReadingRoute
+  AssessmentResultRoute: typeof AssessmentResultRoute
+  AssessmentRetellingRoute: typeof AssessmentRetellingRoute
+  AssessmentSetupRoute: typeof AssessmentSetupRoute
+}
+
+const AssessmentRouteChildren: AssessmentRouteChildren = {
+  AssessmentQuestionRoute: AssessmentQuestionRoute,
+  AssessmentReadingRoute: AssessmentReadingRoute,
+  AssessmentResultRoute: AssessmentResultRoute,
+  AssessmentRetellingRoute: AssessmentRetellingRoute,
+  AssessmentSetupRoute: AssessmentSetupRoute,
+}
+
+const AssessmentRouteWithChildren = AssessmentRoute._addFileChildren(
+  AssessmentRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
-  AssessmentRoute: AssessmentRoute,
+  AssessmentRoute: AssessmentRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
