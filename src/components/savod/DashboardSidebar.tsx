@@ -11,7 +11,12 @@ import {
 import { SavodLogo } from "./SavodLogo";
 import { teacher } from "@/lib/savod/data";
 
-const items = [
+const items: Array<{
+  to: string;
+  label: string;
+  icon: typeof Home;
+  disabled?: boolean;
+}> = [
   { to: "/dashboard", label: "Bosh sahifa", icon: Home },
   { to: "/assessment/setup", label: "Baholash", icon: ClipboardCheck },
   { to: "/students", label: "O‘quvchilar", icon: Users },
@@ -19,7 +24,7 @@ const items = [
   { to: "/dashboard", label: "Matnlar", icon: BookOpen, disabled: true },
   { to: "/dashboard", label: "Hisobotlar", icon: FileBarChart, disabled: true },
   { to: "/dashboard", label: "Sozlamalar", icon: Settings, disabled: true },
-] as const;
+];
 
 export function DashboardSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
