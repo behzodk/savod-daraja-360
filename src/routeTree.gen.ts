@@ -9,38 +9,173 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AssessmentRouteImport } from './routes/assessment'
+import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AssessmentSetupRouteImport } from './routes/assessment.setup'
+import { Route as AssessmentRetellingRouteImport } from './routes/assessment.retelling'
+import { Route as AssessmentResultRouteImport } from './routes/assessment.result'
+import { Route as AssessmentReadingRouteImport } from './routes/assessment.reading'
+import { Route as AssessmentQuestionRouteImport } from './routes/assessment.question'
+import { Route as AppStudentsRouteImport } from './routes/_app.students'
+import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as AppStudentsIdRouteImport } from './routes/_app.students.$id'
 
+const AssessmentRoute = AssessmentRouteImport.update({
+  id: '/assessment',
+  path: '/assessment',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AssessmentSetupRoute = AssessmentSetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
+  getParentRoute: () => AssessmentRoute,
+} as any)
+const AssessmentRetellingRoute = AssessmentRetellingRouteImport.update({
+  id: '/retelling',
+  path: '/retelling',
+  getParentRoute: () => AssessmentRoute,
+} as any)
+const AssessmentResultRoute = AssessmentResultRouteImport.update({
+  id: '/result',
+  path: '/result',
+  getParentRoute: () => AssessmentRoute,
+} as any)
+const AssessmentReadingRoute = AssessmentReadingRouteImport.update({
+  id: '/reading',
+  path: '/reading',
+  getParentRoute: () => AssessmentRoute,
+} as any)
+const AssessmentQuestionRoute = AssessmentQuestionRouteImport.update({
+  id: '/question',
+  path: '/question',
+  getParentRoute: () => AssessmentRoute,
+} as any)
+const AppStudentsRoute = AppStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppStudentsIdRoute = AppStudentsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppStudentsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/assessment': typeof AssessmentRouteWithChildren
+  '/dashboard': typeof AppDashboardRoute
+  '/students': typeof AppStudentsRouteWithChildren
+  '/assessment/question': typeof AssessmentQuestionRoute
+  '/assessment/reading': typeof AssessmentReadingRoute
+  '/assessment/result': typeof AssessmentResultRoute
+  '/assessment/retelling': typeof AssessmentRetellingRoute
+  '/assessment/setup': typeof AssessmentSetupRoute
+  '/students/$id': typeof AppStudentsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/assessment': typeof AssessmentRouteWithChildren
+  '/dashboard': typeof AppDashboardRoute
+  '/students': typeof AppStudentsRouteWithChildren
+  '/assessment/question': typeof AssessmentQuestionRoute
+  '/assessment/reading': typeof AssessmentReadingRoute
+  '/assessment/result': typeof AssessmentResultRoute
+  '/assessment/retelling': typeof AssessmentRetellingRoute
+  '/assessment/setup': typeof AssessmentSetupRoute
+  '/students/$id': typeof AppStudentsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/assessment': typeof AssessmentRouteWithChildren
+  '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/students': typeof AppStudentsRouteWithChildren
+  '/assessment/question': typeof AssessmentQuestionRoute
+  '/assessment/reading': typeof AssessmentReadingRoute
+  '/assessment/result': typeof AssessmentResultRoute
+  '/assessment/retelling': typeof AssessmentRetellingRoute
+  '/assessment/setup': typeof AssessmentSetupRoute
+  '/_app/students/$id': typeof AppStudentsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/assessment'
+    | '/dashboard'
+    | '/students'
+    | '/assessment/question'
+    | '/assessment/reading'
+    | '/assessment/result'
+    | '/assessment/retelling'
+    | '/assessment/setup'
+    | '/students/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/assessment'
+    | '/dashboard'
+    | '/students'
+    | '/assessment/question'
+    | '/assessment/reading'
+    | '/assessment/result'
+    | '/assessment/retelling'
+    | '/assessment/setup'
+    | '/students/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/assessment'
+    | '/_app/dashboard'
+    | '/_app/students'
+    | '/assessment/question'
+    | '/assessment/reading'
+    | '/assessment/result'
+    | '/assessment/retelling'
+    | '/assessment/setup'
+    | '/_app/students/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  AssessmentRoute: typeof AssessmentRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/assessment': {
+      id: '/assessment'
+      path: '/assessment'
+      fullPath: '/assessment'
+      preLoaderRoute: typeof AssessmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +183,114 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/assessment/setup': {
+      id: '/assessment/setup'
+      path: '/setup'
+      fullPath: '/assessment/setup'
+      preLoaderRoute: typeof AssessmentSetupRouteImport
+      parentRoute: typeof AssessmentRoute
+    }
+    '/assessment/retelling': {
+      id: '/assessment/retelling'
+      path: '/retelling'
+      fullPath: '/assessment/retelling'
+      preLoaderRoute: typeof AssessmentRetellingRouteImport
+      parentRoute: typeof AssessmentRoute
+    }
+    '/assessment/result': {
+      id: '/assessment/result'
+      path: '/result'
+      fullPath: '/assessment/result'
+      preLoaderRoute: typeof AssessmentResultRouteImport
+      parentRoute: typeof AssessmentRoute
+    }
+    '/assessment/reading': {
+      id: '/assessment/reading'
+      path: '/reading'
+      fullPath: '/assessment/reading'
+      preLoaderRoute: typeof AssessmentReadingRouteImport
+      parentRoute: typeof AssessmentRoute
+    }
+    '/assessment/question': {
+      id: '/assessment/question'
+      path: '/question'
+      fullPath: '/assessment/question'
+      preLoaderRoute: typeof AssessmentQuestionRouteImport
+      parentRoute: typeof AssessmentRoute
+    }
+    '/_app/students': {
+      id: '/_app/students'
+      path: '/students'
+      fullPath: '/students'
+      preLoaderRoute: typeof AppStudentsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/students/$id': {
+      id: '/_app/students/$id'
+      path: '/$id'
+      fullPath: '/students/$id'
+      preLoaderRoute: typeof AppStudentsIdRouteImport
+      parentRoute: typeof AppStudentsRoute
+    }
   }
 }
 
+interface AppStudentsRouteChildren {
+  AppStudentsIdRoute: typeof AppStudentsIdRoute
+}
+
+const AppStudentsRouteChildren: AppStudentsRouteChildren = {
+  AppStudentsIdRoute: AppStudentsIdRoute,
+}
+
+const AppStudentsRouteWithChildren = AppStudentsRoute._addFileChildren(
+  AppStudentsRouteChildren,
+)
+
+interface AppRouteChildren {
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppStudentsRoute: typeof AppStudentsRouteWithChildren
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppDashboardRoute: AppDashboardRoute,
+  AppStudentsRoute: AppStudentsRouteWithChildren,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
+interface AssessmentRouteChildren {
+  AssessmentQuestionRoute: typeof AssessmentQuestionRoute
+  AssessmentReadingRoute: typeof AssessmentReadingRoute
+  AssessmentResultRoute: typeof AssessmentResultRoute
+  AssessmentRetellingRoute: typeof AssessmentRetellingRoute
+  AssessmentSetupRoute: typeof AssessmentSetupRoute
+}
+
+const AssessmentRouteChildren: AssessmentRouteChildren = {
+  AssessmentQuestionRoute: AssessmentQuestionRoute,
+  AssessmentReadingRoute: AssessmentReadingRoute,
+  AssessmentResultRoute: AssessmentResultRoute,
+  AssessmentRetellingRoute: AssessmentRetellingRoute,
+  AssessmentSetupRoute: AssessmentSetupRoute,
+}
+
+const AssessmentRouteWithChildren = AssessmentRoute._addFileChildren(
+  AssessmentRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
+  AssessmentRoute: AssessmentRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
