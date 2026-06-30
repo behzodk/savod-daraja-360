@@ -77,19 +77,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Savod360 — O‘qidi. Lekin tushundimi?" },
+      { title: "Savod 360" },
       {
         name: "description",
         content:
           "Savod360 — bolaning o‘qish, ravonlik va tushunish darajasini alohida tahlil qiluvchi diagnostik platforma.",
       },
-      { property: "og:title", content: "Savod360 — O‘qidi. Lekin tushundimi?" },
+      { property: "og:title", content: "Savod 360" },
       {
         property: "og:description",
         content:
           "Boshlang‘ich sinflar uchun 90 soniyalik o‘qish diagnostikasi: dekodlash, ravonlik va tushunish.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:title", content: "Savod 360" },
+      { name: "description", content: "Savod360: Uzbek reading assessment for children, analyzing decoding, fluency, and comprehension." },
+      { property: "og:description", content: "Savod360: Uzbek reading assessment for children, analyzing decoding, fluency, and comprehension." },
+      { name: "twitter:description", content: "Savod360: Uzbek reading assessment for children, analyzing decoding, fluency, and comprehension." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/19abf4cb-1d1f-4e1a-aa69-e7c119d8900c/id-preview-7677bcd8--4aeb836b-d435-4b6c-938b-6589b1ae66b2.lovable.app-1782800049678.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/19abf4cb-1d1f-4e1a-aa69-e7c119d8900c/id-preview-7677bcd8--4aeb836b-d435-4b6c-938b-6589b1ae66b2.lovable.app-1782800049678.png" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
