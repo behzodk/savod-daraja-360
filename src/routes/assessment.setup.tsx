@@ -1,9 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Mic, CheckCircle2, ChevronRight } from "lucide-react";
-import { students, passages, demoProfiles } from "@/lib/savod/data";
+import { students, passages } from "@/lib/savod/data";
 import { useSavod } from "@/lib/savod/store";
-import type { DemoProfileId } from "@/lib/savod/types";
 
 export const Route = createFileRoute("/assessment/setup")({
   component: Setup,
@@ -16,7 +15,6 @@ function Setup() {
   const [level, setLevel] = useState(0);
 
   const student = students.find((s) => s.id === draft.studentId) ?? students[0];
-  const profile = demoProfiles.find((p) => p.id === draft.demoProfileId) ?? demoProfiles[0];
 
   const checkMic = async () => {
     setMicState("checking");
@@ -24,7 +22,12 @@ function Setup() {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       setMicState("ready");
       const Ctx =
-        (window as unknown as { AudioContext: typeof AudioContext; webkitAudioContext: typeof AudioContext }).AudioContext ||
+        (
+          window as unknown as {
+            AudioContext: typeof AudioContext;
+            webkitAudioContext: typeof AudioContext;
+          }
+        ).AudioContext ||
         (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       const ctx = new Ctx();
       const src = ctx.createMediaStreamSource(stream);
@@ -55,24 +58,16 @@ function Setup() {
     }
   };
 
-  useEffect(() => {
-    // Auto-set student when demo profile changes
-    setDraft({ studentId: profile.studentId });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draft.demoProfileId]);
-
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
-      <h1 className="font-display text-3xl font-bold tracking-tight">
-        Baholashni boshlash
-      </h1>
+      <h1 className="font-display text-3xl font-bold tracking-tight">Baholashni boshlash</h1>
       <p className="text-muted-foreground mt-1">
         O‘quvchini va matnni tanlang, so‘ng mikrofonni tekshirib baholashni boshlang.
       </p>
 
-      <section className="mt-8 grid md:grid-cols-2 gap-6">
+      <section className="mt-8">
         {/* Student selection */}
-        <div className="rounded-2xl border bg-card p-6">
+        <div className="rounded-2xl border bg-card p-6 max-w-xl">
           <div className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
             O‘quvchi
           </div>
@@ -82,15 +77,20 @@ function Setup() {
             className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
           >
             {students.map((s) => (
-              <option key={s.id} value={s.id}>{s.name}</option>
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
             ))}
           </select>
           <div className="mt-4 rounded-lg bg-muted/60 p-4 text-sm space-y-1">
             <div className="font-medium">{student.name}</div>
-            <div className="text-muted-foreground">{student.classroom} · {student.age} yosh</div>
+            <div className="text-muted-foreground">
+              {student.classroom} · {student.age} yosh
+            </div>
             {student.scores && (
               <div className="text-muted-foreground">
-                Oxirgi natija: D {student.scores.decoding} · R {student.scores.fluency} · T {student.scores.comprehension}
+                Oxirgi natija: D {student.scores.decoding} · R {student.scores.fluency} · T{" "}
+                {student.scores.comprehension}
               </div>
             )}
             <div className="text-muted-foreground">
@@ -98,49 +98,11 @@ function Setup() {
             </div>
           </div>
         </div>
-
-        {/* Demo profile selector */}
-        <div className="rounded-2xl border bg-card p-6">
-          <div className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
-            Demo profil (taqdimot uchun)
-          </div>
-          <div className="space-y-2">
-            {demoProfiles.map((p) => (
-              <label
-                key={p.id}
-                className={`flex items-center gap-3 rounded-lg border px-3 py-2.5 cursor-pointer text-sm ${
-                  draft.demoProfileId === p.id ? "border-navy bg-navy/5" : "hover:bg-muted/40"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="demo"
-                  className="accent-navy"
-                  checked={draft.demoProfileId === p.id}
-                  onChange={() =>
-                    setDraft({
-                      demoProfileId: p.id as DemoProfileId,
-                      studentId: p.studentId,
-                    })
-                  }
-                />
-                <div className="flex-1">
-                  <div className="font-medium">{p.label}</div>
-                  <div className="text-xs text-muted-foreground">
-                    D {p.scores.decoding} · R {p.scores.fluency} · T {p.scores.comprehension}
-                  </div>
-                </div>
-              </label>
-            ))}
-          </div>
-        </div>
       </section>
 
       {/* Passage selection */}
       <section className="mt-8">
-        <div className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
-          Matn
-        </div>
+        <div className="text-xs uppercase tracking-wider text-muted-foreground mb-3">Matn</div>
         <div className="grid md:grid-cols-3 gap-4">
           {passages.map((p) => {
             const active = draft.passageId === p.id;
@@ -157,8 +119,12 @@ function Setup() {
                   {p.grade}-sinf · {p.wordCount} so‘z
                 </div>
                 <div className="mt-3 space-y-1 text-sm">
-                  <div><span className="text-muted-foreground">Mavzu:</span> {p.topic}</div>
-                  <div><span className="text-muted-foreground">Ko‘nikma:</span> {p.skill}</div>
+                  <div>
+                    <span className="text-muted-foreground">Mavzu:</span> {p.topic}
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Ko‘nikma:</span> {p.skill}
+                  </div>
                 </div>
               </button>
             );
@@ -198,10 +164,7 @@ function Setup() {
             </span>
           )}
           <div className="flex-1 max-w-xs h-2 rounded-full bg-muted overflow-hidden">
-            <div
-              className="h-full bg-info transition-all"
-              style={{ width: `${level * 100}%` }}
-            />
+            <div className="h-full bg-info transition-all" style={{ width: `${level * 100}%` }} />
           </div>
         </div>
       </section>

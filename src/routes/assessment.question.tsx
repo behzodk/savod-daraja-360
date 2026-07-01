@@ -5,6 +5,7 @@ import { CheckCircle2, ChevronRight, Mic, Pencil } from "lucide-react";
 import { demoProfiles, passages, students } from "@/lib/savod/data";
 import { useSavod, buildAssessmentFromProfile } from "@/lib/savod/store";
 import { AudioRecorder } from "@/components/savod/AudioRecorder";
+import { transcribeAudio } from "@/lib/savod/speech.functions";
 
 export const Route = createFileRoute("/assessment/question")({
   component: Question,
@@ -14,22 +15,36 @@ function Question() {
   const navigate = useNavigate();
   const { draft, setDraft, saveResult } = useSavod();
   const passage = passages.find((p) => p.id === draft.passageId) ?? passages[0];
-  const profile =
-    demoProfiles.find((p) => p.id === draft.demoProfileId) ?? demoProfiles[0];
+  const profile = demoProfiles.find((p) => p.id === draft.demoProfileId) ?? demoProfiles[0];
   const student = students.find((s) => s.id === draft.studentId) ?? students[0];
 
   const [mode, setMode] = useState<"mic" | "text">("mic");
-  const [stage, setStage] = useState<"recording" | "review">("recording");
-  const [text, setText] = useState(profile.inferenceTranscript);
+  const [stage, setStage] = useState<"recording" | "transcribing" | "review">("recording");
+  const [text, setText] = useState("");
+  const [transcribeError, setTranscribeError] = useState<string | null>(null);
+
+  const handleRecordingComplete = async (blob: Blob) => {
+    setStage("transcribing");
+    setTranscribeError(null);
+    try {
+      const form = new FormData();
+      form.append("audio", blob, "answer.webm");
+      form.append("languageCode", "uz");
+      const result = await transcribeAudio({ data: form });
+      setText(result.text);
+    } catch (err) {
+      console.error(err);
+      setTranscribeError(
+        err instanceof Error ? err.message : "Nutqni tanib bo‘lish muvaffaqiyatsiz tugadi.",
+      );
+      setText("");
+    }
+    setStage("review");
+  };
 
   const submit = () => {
     setDraft({ inferenceTranscript: text });
-    const result = buildAssessmentFromProfile(
-      draft.demoProfileId,
-      student.id,
-      student.name,
-      passage.id,
-    );
+    const result = buildAssessmentFromProfile(draft, student.id, student.name, passage.id);
     result.inferenceTranscript = text;
     saveResult(result);
     navigate({
@@ -40,17 +55,13 @@ function Question() {
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-10">
-      <h1 className="font-display text-2xl font-bold tracking-tight">
-        3-bosqich: Mantiqiy savol
-      </h1>
+      <h1 className="font-display text-2xl font-bold tracking-tight">3-bosqich: Mantiqiy savol</h1>
       <p className="text-muted-foreground mt-1">
         Javob matnda aynan yozilmagan. O‘qigan voqeangizga asoslanib xulosa qiling.
       </p>
 
       <div className="mt-6 rounded-2xl border bg-card p-6">
-        <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">
-          Savol
-        </div>
+        <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Savol</div>
         <p className="font-display text-xl">{passage.inferenceQuestion}</p>
       </div>
 
@@ -77,8 +88,15 @@ function Question() {
         {mode === "mic" && stage === "recording" && (
           <AudioRecorder
             maxSeconds={45}
-            onComplete={() => setStage("review")}
+            onComplete={(blob) => void handleRecordingComplete(blob)}
           />
+        )}
+
+        {mode === "mic" && stage === "transcribing" && (
+          <div className="rounded-xl border bg-card p-10 text-center">
+            <div className="inline-block h-8 w-8 rounded-full border-4 border-info/30 border-t-info animate-spin" />
+            <p className="mt-4 text-sm text-muted-foreground">Nutq matnga aylantirilmoqda…</p>
+          </div>
         )}
 
         {mode === "text" && (
@@ -99,6 +117,7 @@ function Question() {
             <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">
               Tizim yozib olgan javob
             </div>
+            {transcribeError && <p className="mb-2 text-sm text-danger">{transcribeError}</p>}
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
